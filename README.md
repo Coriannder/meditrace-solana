@@ -195,6 +195,8 @@ npm run dev
 # http://localhost:3000
 ```
 
+The notary key is read from the `NOTARY_KEY` environment variable (the keypair's JSON array, see `.env.example`), falling back to `keys/notary.json`. Use the variable for deployments (e.g. Vercel → Settings → Environment Variables); `.env.local` and `keys/` are gitignored.
+
 Stack: Next.js 16 · TypeScript · Tailwind CSS 4 · `@solana/kit` 8 (plugin client, transaction v1) · `@solana-program/memo` · `@solana-program/system`.
 
 ## Limitations (honest)

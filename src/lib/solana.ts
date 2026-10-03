@@ -2,13 +2,15 @@ import {
   address,
   createAddressWithSeed,
   createClient,
+  createKeyPairSignerFromBytes,
   lamports,
   type Address,
 } from "@solana/kit";
 import { solanaDevnetRpc } from "@solana/kit-plugin-rpc";
-import { signerFromFile } from "@solana/kit-plugin-signer";
+import { signer } from "@solana/kit-plugin-signer";
 import { getTransferSolInstruction } from "@solana-program/system";
 import { getAddMemoInstruction } from "@solana-program/memo";
+import { readFile } from "fs/promises";
 import path from "path";
 
 const NOTARY_KEYPAIR_PATH = path.join(process.cwd(), "keys", "notary.json");
@@ -18,9 +20,22 @@ export const SYSTEM_PROGRAM = address(
 
 export const MEMO_PREFIX = "MEDTRC";
 
+/**
+ * Clave de la notaria: primero la variable de entorno NOTARY_KEY (array JSON de
+ * 64 bytes, mismo formato que keys/notary.json) — así funciona en Vercel —;
+ * si no está, el archivo local keys/notary.json.
+ */
+async function loadNotarySigner() {
+  const raw =
+    process.env.NOTARY_KEY ?? (await readFile(NOTARY_KEYPAIR_PATH, "utf8"));
+  return createKeyPairSignerFromBytes(
+    Uint8Array.from(JSON.parse(raw) as number[])
+  );
+}
+
 export async function getNotaryClient() {
   const client = await createClient()
-    .use(await signerFromFile(NOTARY_KEYPAIR_PATH))
+    .use(signer(await loadNotarySigner()))
     .use(
       solanaDevnetRpc({
         transactionConfig: { version: 1, priorityFeeLamports: lamports(1_000n) },
