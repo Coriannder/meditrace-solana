@@ -2,9 +2,9 @@
 
 **A verifiable passport for medical equipment — built on Solana.**
 
-Meditrace is a notarization microservice that any hospital maintenance system (CMMS) can plug into. Every lifecycle event of a medical device — installation, preventive maintenance, repair, calibration, transfer, decommission — gets a tamper-evident fingerprint anchored on Solana. The full record never leaves the hospital. Anyone holding the document can verify it, without trusting the hospital, the vendor, or us.
+Meditrace is a notarization microservice that any hospital maintenance system (CMMS) can plug into. Every lifecycle event of a medical device — installation, preventive maintenance, repair, calibration, transfer, decommission — gets a tamper-evident fingerprint anchored on Solana. The full record never leaves the hospital. Anyone holding the document can verify it, without trusting the hospital, the software vendor, or us.
 
-> Status: working MVP on **Solana devnet**.
+> Status: working MVP on **Solana devnet** · [Demo video](public/demo.mp4)
 
 ---
 
@@ -166,6 +166,7 @@ curl -X POST http://localhost:3000/api/anchor \
 
 | Page | Role |
 |---|---|
+| `/` | **Landing**: explains the problem and the solution, with an interactive playground — verify a real devnet record in the browser, tamper it, watch it flip to `NO COINCIDE` |
 | `/equipos` | **Demo CMMS**: register equipment, get a pseudonymous ID, and link to its on-chain history (as a CMMS would, from its own equipment page) |
 | `/service` | **Demo CMMS**: log a maintenance event. It is hashed in the browser, anchored, and you get the record JSON plus a **document QR** |
 | `/verificar` | **Public portal**: verify a document (paste, upload, or scan its QR) and browse the asset's on-chain history and chain integrity |

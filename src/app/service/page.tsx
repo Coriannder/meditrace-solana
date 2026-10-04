@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import QRCode from "react-qr-code";
 import {
   Globe,
   Lock,
   Wrench,
   Anchor,
+  ArrowRight,
   CheckCircle2,
   Copy,
   Download,
   ExternalLink,
+  ShieldCheck,
 } from "lucide-react";
 import Nav from "@/components/Nav";
 import { GENESIS, hashRecord, type Visibility } from "@/lib/hash";
@@ -142,30 +145,34 @@ export default function ServicePage() {
     <main className="min-h-screen p-8 bg-cmms">
       <Nav />
       <div className="max-w-3xl mx-auto space-y-8">
-        <div className="flex items-start gap-4">
-          <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100">
-            <Wrench size={24} className="text-blue-600" />
+        <div className="space-y-4">
+          <div className="inline-flex items-center gap-2 border border-blue-200 bg-blue-50 text-blue-700 rounded-full px-4 py-1.5 text-xs font-mono tracking-[0.2em]">
+            PASO 02 · DEMO CMMS
           </div>
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
-              Registrar service{" "}
-              <span className="text-xs bg-blue-50 border border-blue-200 text-blue-700 px-2.5 py-1 rounded-full align-middle font-medium">
-                DEMO CMMS
-              </span>
-            </h1>
-            <p className="text-sm text-blue-600/80 mt-2">
-              Esta pantalla simula el CMMS del hospital. En producción, el
-              registro se hashea en el CMMS y se manda a{" "}
-              <code className="font-mono">POST /api/anchor</code> por API.
-            </p>
+          <div className="flex items-start gap-4">
+            <div className="p-3 rounded-2xl bg-blue-50 border border-blue-100">
+              <Wrench size={24} className="text-blue-600" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-zinc-900">
+                Registrar service
+              </h1>
+              <p className="text-sm text-zinc-500 mt-2">
+                Esta pantalla simula el CMMS del hospital. En producción, el
+                registro se hashea en el CMMS y se manda a{" "}
+                <code className="font-mono">POST /api/anchor</code> por API.
+              </p>
+            </div>
           </div>
         </div>
 
         <div className="grid sm:grid-cols-2 gap-4 text-sm">
-          <div className="border border-emerald-200 bg-emerald-50/60 rounded-2xl p-4 flex gap-3">
-            <Globe size={18} className="text-emerald-600 shrink-0 mt-0.5" />
+          <div className="border border-white/70 bg-white/70 backdrop-blur-xl rounded-2xl p-4 flex gap-3 shadow-sm">
+            <span className="grid place-items-center w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 shrink-0">
+              <Globe size={16} />
+            </span>
             <div>
-              <p className="text-emerald-700 font-semibold mb-1">
+              <p className="text-zinc-800 font-semibold mb-0.5">
                 Viaja a Solana (público)
               </p>
               <p className="text-zinc-500">
@@ -176,9 +183,11 @@ export default function ServicePage() {
             </div>
           </div>
           <div className="border border-white/70 bg-white/70 backdrop-blur-xl rounded-2xl p-4 flex gap-3 shadow-sm">
-            <Lock size={18} className="text-zinc-500 shrink-0 mt-0.5" />
+            <span className="grid place-items-center w-9 h-9 rounded-xl bg-zinc-100 text-zinc-500 shrink-0">
+              <Lock size={16} />
+            </span>
             <div>
-              <p className="text-zinc-800 font-semibold mb-1">
+              <p className="text-zinc-800 font-semibold mb-0.5">
                 Se queda en tu navegador (privado)
               </p>
               <p className="text-zinc-500">
@@ -312,7 +321,7 @@ export default function ServicePage() {
 
           <button
             disabled={loading || !assetId}
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl px-6 py-2.5 font-medium transition shadow-sm"
+            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl px-6 py-2.5 font-medium transition shadow-lg shadow-blue-600/20"
           >
             <Anchor size={16} />
             {loading ? "Anclando en devnet…" : "Anclar evento"}
@@ -321,7 +330,7 @@ export default function ServicePage() {
         </form>
 
         {done && (
-          <div className="border border-emerald-200 bg-emerald-50/50 rounded-2xl p-6 space-y-4">
+          <div className="border border-emerald-200 bg-emerald-50/60 backdrop-blur-xl rounded-2xl p-6 space-y-4 shadow-sm">
             <p className="text-emerald-700 font-semibold flex items-center gap-2">
               <CheckCircle2 size={18} />
               Anclado en Solana
@@ -389,6 +398,20 @@ export default function ServicePage() {
                   Descargar .json
                 </button>
               </div>
+            </div>
+
+            <div className="border-t border-emerald-200 pt-4 flex justify-end">
+              <Link
+                href={`/verificar?a=${assetId}`}
+                className="group inline-flex items-center gap-2 rounded-xl border border-emerald-300 bg-emerald-100/60 px-5 py-2.5 text-sm font-medium text-emerald-800 hover:bg-emerald-100 transition"
+              >
+                <ShieldCheck size={15} />
+                Siguiente: verificá este registro
+                <ArrowRight
+                  size={14}
+                  className="group-hover:translate-x-0.5 transition-transform"
+                />
+              </Link>
             </div>
           </div>
         )}

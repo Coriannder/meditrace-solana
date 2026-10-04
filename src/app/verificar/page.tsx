@@ -251,7 +251,7 @@ function VerificarInner() {
             <button
               onClick={verifyDoc}
               disabled={!docJson || verifying}
-              className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-emerald-950 rounded-xl px-6 py-2.5 font-semibold transition shadow-lg shadow-emerald-500/30"
+              className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-emerald-950 rounded-xl px-6 py-2.5 font-semibold transition shadow-lg shadow-emerald-500/25"
             >
               {verifying ? (
                 <Loader2 size={16} className="animate-spin" />

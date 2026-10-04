@@ -128,3 +128,170 @@ body {
 ::selection {
   background: rgba(16, 185, 129, 0.25);
 }
+
+/* ---------- Landing scrollytelling: crossfade, reveal, micro-visual ---------- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Capas aurora fijas para el crossfade claro→oscuro de la landing.
+   (Las clases .bg-* posicionan ::before como fixed; acá la capa entera es
+   fixed, así los pseudo van absolutos — mismo render.) */
+.aurora-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+.aurora-layer::before {
+  content: "";
+  position: absolute;
+  inset: -25%;
+  filter: blur(80px) saturate(140%);
+  animation: aurora 22s ease-in-out infinite alternate;
+}
+.aurora-light {
+  z-index: -20;
+  background: #f5f7ff;
+}
+.aurora-light::before {
+  opacity: 0.55;
+  background:
+    radial-gradient(at 15% 10%, #93c5fd 0, transparent 40%),
+    radial-gradient(at 85% 12%, #c4b5fd 0, transparent 38%),
+    radial-gradient(at 75% 75%, #67e8f9 0, transparent 40%),
+    radial-gradient(at 15% 85%, #a5b4fc 0, transparent 40%);
+}
+/* Crossfade claro→oscuro: la zona oscura es la view-timeline cuyo
+   recorrido por el viewport gobierna el fade del overlay — CSS puro,
+   sin JS (Chrome/Edge/Safari 26). En browsers sin scroll-driven
+   animations lo maneja useAuroraCrossfade vía inline opacity. */
+.landing-scope {
+  timeline-scope: --darkzone;
+}
+.landing-dark-zone {
+  view-timeline-name: --darkzone;
+}
+@keyframes aurora-dark-in {
+  to {
+    opacity: 1;
+  }
+}
+@supports (animation-timeline: --x) {
+  .aurora-dark {
+    animation: aurora-dark-in linear both;
+    animation-timeline: --darkzone;
+    /* Funde desde que la zona entra al viewport hasta ~10% de su
+       recorrido — equivale a los ~55vh del fade original. */
+    animation-range: cover 0% cover 10%;
+  }
+}
+.aurora-dark {
+  z-index: -10;
+  opacity: 0; /* useAuroraCrossfade la sube a 1 con el scroll */
+  background: #030a08;
+}
+.aurora-dark::before {
+  opacity: 0.5;
+  background:
+    radial-gradient(at 20% 10%, #10b981 0, transparent 38%),
+    radial-gradient(at 85% 20%, #0ea5e9 0, transparent 32%),
+    radial-gradient(at 65% 80%, #14b8a6 0, transparent 38%),
+    radial-gradient(at 10% 80%, #065f46 0, transparent 40%);
+}
+.aurora-dark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px) 0 0 / 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, #000 40%, transparent 100%);
+}
+
+/* Entrada al hacer scroll, fail-open: .reveal es visible por defecto.
+   Reveal.tsx agrega .reveal-armed (oculto) solo a elementos fuera del
+   viewport y lo quita cuando entran — ahí corre esta transición.
+   Sin JS / sin IntersectionObserver, el contenido nunca se oculta. */
+.reveal {
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
+}
+.reveal.reveal-armed {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+/* Micro-visual del hero: tarjetita JSON flotante que se comprime a un hash */
+.json-hash-card {
+  animation: float-y 7s ease-in-out infinite;
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.json-cycle {
+  transform-origin: top;
+  animation: json-compress 7s ease-in-out infinite;
+}
+@keyframes json-compress {
+  0%,
+  52%,
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  62%,
+  88% {
+    opacity: 0;
+    transform: scaleY(0.4);
+  }
+}
+.hash-cycle {
+  opacity: 0;
+  animation: hash-appear 7s ease-in-out infinite;
+}
+@keyframes hash-appear {
+  0%,
+  58%,
+  100% {
+    opacity: 0;
+  }
+  68%,
+  92% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .aurora-layer::before,
+  .aurora-dark,
+  .json-hash-card,
+  .json-cycle,
+  .hash-cycle {
+    animation: none;
+  }
+  .reveal,
+  .reveal.reveal-armed {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  /* Sin el loop compresión→hash, el JSON queda siempre visible */
+  .hash-cycle {
+    display: none;
+  }
+  .json-cycle {
+    opacity: 1;
+    transform: none;
+  }
+}
