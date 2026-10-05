@@ -44,3 +44,4 @@ next-env.d.ts
 # Solana notary keypair (devnet) y datos locales
 keys/
 data/
+PLAN-PRESENTACION.md
